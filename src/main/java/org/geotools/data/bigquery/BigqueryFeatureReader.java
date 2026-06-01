@@ -21,14 +21,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
-import org.geotools.data.Query;
-import org.geotools.data.simple.SimpleFeatureReader;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureReader;
 import org.geotools.data.store.ContentState;
 import org.geotools.factory.CommonFactoryFinder;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.type.AttributeDescriptor;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
 
 public abstract class BigqueryFeatureReader implements SimpleFeatureReader {
 
@@ -102,7 +102,7 @@ public abstract class BigqueryFeatureReader implements SimpleFeatureReader {
      * @return
      */
     private void decorateQueryWithPartitionFilter(AttributeDescriptor attr, Query query) {
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+        FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 
         String column = attr.getLocalName();
         Map<Object, Object> userData = attr.getUserData();

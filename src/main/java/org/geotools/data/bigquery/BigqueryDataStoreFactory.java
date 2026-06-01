@@ -23,8 +23,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataAccessFactory.Param;
+import org.geotools.api.data.DataStoreFactorySpi;
 import org.geotools.util.KVP;
 import org.geotools.util.logging.Logging;
 
@@ -200,6 +201,12 @@ public class BigqueryDataStoreFactory implements DataStoreFactorySpi {
             return filePath.replace("file://", "");
         } else {
             String dataDir = System.getenv("GEOSERVER_DATA_DIR");
+            if (dataDir == null) {
+                dataDir = System.getProperty("GEOSERVER_DATA_DIR");
+            }
+            if (dataDir == null) {
+                throw new IOException("GEOSERVER_DATA_DIR environment variable is not set");
+            }
             return filePath.replace("file:", dataDir + "/");
         }
     }

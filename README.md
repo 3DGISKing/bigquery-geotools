@@ -2,6 +2,8 @@
 
 Add [BigQuery](https://cloud.google.com/bigquery) support to [Geoserver](https://geoserver.org/).
 
+See [CHANGELOG.md](CHANGELOG.md) for version history.
+
 <img src="https://storage.googleapis.com/bigquery-geotools-public/new_bq_datasource.png" width=640>
 
 ## Install
@@ -10,7 +12,7 @@ Build or download the JARs and copy them into geoserver's `WEB-INF/lib` folder i
 
 ### Download
 
-A `.zip` containing the `bigquery-geotools` JAR and required dependency JARs is built against JDK 8 is available in under [releases](https://github.com/GoogleCloudPlatform/bigquery-geotools/releases).
+Pre-built ZIPs from the [original Google releases](https://github.com/GoogleCloudPlatform/bigquery-geotools/releases) target GeoTools 30 / GeoServer 2.24.x. This fork builds against **GeoTools 34.3** for **GeoServer 2.28.x** (Java 17+).
 
 ### Build
 
@@ -19,11 +21,19 @@ A `.zip` containing the `bigquery-geotools` JAR and required dependency JARs is 
 gcloud builds submit .
 ```
 
-2. Build locally. Requires JDK 8+.
+2. Build locally. Requires **JDK 17+** and Maven 3.9+.
 
 ```
-mvn package -DskipTests
+mvn package
 ```
+
+The assembly ZIP (`target/zipfile-gt-bigquery.zip`) contains:
+
+- `gt-bigquery-*.jar` (this plugin)
+- `gt-geojson-*.jar` (GeoJSON geometry support — **not** bundled with GeoServer 2.28)
+- Google Cloud dependency JARs
+
+Copy **all** JARs from the ZIP into GeoServer's `WEB-INF/lib`. Do **not** copy other GeoTools JARs (`gt-main`, `gt-api`, etc.) — GeoServer already provides those.
 
 ## Authentication
 

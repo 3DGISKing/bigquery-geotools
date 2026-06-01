@@ -24,6 +24,17 @@
             <includes>
                 <include>*.jar</include>
             </includes>
+            <excludes>
+                <exclude>gt-*.jar</exclude>
+            </excludes>
+        </fileSet>
+        <!-- GeoServer does not ship gt-geojson; required at runtime for geometry parsing -->
+        <fileSet>
+            <directory>target/geotools-addons</directory>
+            <outputDirectory />
+            <includes>
+                <include>gt-geojson-*.jar</include>
+            </includes>
         </fileSet>
     </fileSets>
 </assembly>

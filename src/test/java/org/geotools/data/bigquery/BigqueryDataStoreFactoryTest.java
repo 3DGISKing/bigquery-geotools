@@ -64,6 +64,12 @@ public class BigqueryDataStoreFactoryTest {
         assertEquals("/Users/test/workspace/key.json", factory.getCompatibleKeyPath(linuxPath1));
         assertEquals("src/test/resources/testkey.json", factory.getCompatibleKeyPath(linuxPath2));
         assertEquals("D:\\Workspace\\key.json", factory.getCompatibleKeyPath(windowsPath1));
-        assertEquals("/opt/geoserver/data_dir/key.json", factory.getCompatibleKeyPath(dataDirPath));
+
+        System.setProperty("GEOSERVER_DATA_DIR", "/opt/geoserver/data_dir");
+        try {
+            assertEquals("/opt/geoserver/data_dir/key.json", factory.getCompatibleKeyPath(dataDirPath));
+        } finally {
+            System.clearProperty("GEOSERVER_DATA_DIR");
+        }
     }
 }

@@ -19,52 +19,34 @@ package org.geotools.data.bigquery;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
-import org.geotools.data.Query;
+import org.geotools.api.data.Query;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.Not;
+import org.geotools.api.filter.PropertyIsEqualTo;
+import org.geotools.api.filter.PropertyIsGreaterThan;
+import org.geotools.api.filter.PropertyIsGreaterThanOrEqualTo;
+import org.geotools.api.filter.PropertyIsLessThan;
+import org.geotools.api.filter.PropertyIsLessThanOrEqualTo;
+import org.geotools.api.filter.PropertyIsLike;
+import org.geotools.api.filter.PropertyIsNotEqualTo;
+import org.geotools.api.filter.PropertyIsNull;
+import org.geotools.api.filter.spatial.BBOX;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.iso.PositionFactoryImpl;
-import org.geotools.geometry.iso.PrecisionModel;
-import org.geotools.geometry.iso.aggregate.AggregateFactoryImpl;
-import org.geotools.geometry.iso.complex.ComplexFactoryImpl;
-import org.geotools.geometry.iso.coordinate.GeometryFactoryImpl;
-import org.geotools.geometry.iso.primitive.PrimitiveFactoryImpl;
-import org.geotools.geometry.iso.text.WKTParser;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.Before;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.Not;
-import org.opengis.filter.PropertyIsEqualTo;
-import org.opengis.filter.PropertyIsGreaterThan;
-import org.opengis.filter.PropertyIsGreaterThanOrEqualTo;
-import org.opengis.filter.PropertyIsLessThan;
-import org.opengis.filter.PropertyIsLessThanOrEqualTo;
-import org.opengis.filter.PropertyIsLike;
-import org.opengis.filter.PropertyIsNotEqualTo;
-import org.opengis.filter.PropertyIsNull;
-import org.opengis.filter.spatial.BBOX;
-import org.opengis.geometry.PositionFactory;
-import org.opengis.geometry.Precision;
-import org.opengis.geometry.aggregate.AggregateFactory;
-import org.opengis.geometry.coordinate.GeometryFactory;
-import org.opengis.geometry.primitive.PrimitiveFactory;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.picocontainer.DefaultPicoContainer;
-
-// import org.geotools.geometry.jts.spatialschema.PositionFactoryImpl;
 
 public class BigqueryFilterVisitorTest {
 
     SimpleFeatureType countiesFeatureType;
-    FilterFactory2 ff;
-    WKTParser wktParser;
+    FilterFactory ff;
     CoordinateReferenceSystem CRS = DefaultGeographicCRS.WGS84;
     BigqueryPregenerateOptions pregenNone = BigqueryPregenerateOptions.MV_NONE;
 
@@ -73,7 +55,7 @@ public class BigqueryFilterVisitorTest {
         SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
         builder.setName("counties");
         builder.setCRS(DefaultGeographicCRS.WGS84);
-        builder.add("geom", org.opengis.geometry.Geometry.class);
+        builder.add("geom", Geometry.class);
         builder.add("name", String.class);
         builder.add("population", Integer.class);
         builder.add("date", Date.class);
@@ -82,31 +64,8 @@ public class BigqueryFilterVisitorTest {
     }
 
     @Before
-    public void setupFactories() throws FactoryException {
-        ff = CommonFactoryFinder.getFilterFactory2(null);
-
-        DefaultPicoContainer container = new DefaultPicoContainer();
-        container.addComponent(PositionFactoryImpl.class);
-        container.addComponent(AggregateFactoryImpl.class);
-        container.addComponent(ComplexFactoryImpl.class);
-        container.addComponent(GeometryFactoryImpl.class);
-        container.addComponent(PrimitiveFactoryImpl.class);
-
-        CoordinateReferenceSystem crs = DefaultGeographicCRS.WGS84;
-        container.addComponent(crs);
-        Precision pr = new PrecisionModel();
-        container.addComponent(pr);
-
-        PositionFactoryImpl pf =
-                (PositionFactoryImpl) container.getComponent(PositionFactory.class);
-        GeometryFactoryImpl gf =
-                (GeometryFactoryImpl) container.getComponent(GeometryFactory.class);
-        PrimitiveFactoryImpl prf =
-                (PrimitiveFactoryImpl) container.getComponent(PrimitiveFactory.class);
-        AggregateFactoryImpl af =
-                (AggregateFactoryImpl) container.getComponent(AggregateFactory.class);
-
-        wktParser = new WKTParser(gf, prf, pf, af);
+    public void setupFactories() {
+        ff = CommonFactoryFinder.getFilterFactory(null);
     }
 
     @Test
